@@ -1,12 +1,11 @@
-import { Component, lazy, Suspense } from 'react';
-import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Switch } from 'react-router-dom';
 import AppBar from './Components/Navigation/AppBar';
 import Spinner from './Components/Loader/Loader';
 import authOperations from './redux/auth/auth-operations';
-import { getLoading, getError } from './redux/contacts/contacts-selectors';
+import { getError } from './redux/contacts/contacts-selectors';
 import { ToastContainer, toast } from 'react-toastify';
-import PropTypes from 'prop-types';
 import PrivateRoute from './Components/PrivateRoute';
 import PublicRoute from './Components/PublicRoute';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,57 +30,55 @@ const ContactsView = lazy(() =>
   ),
 );
 
-class App extends Component {
-  componentDidMount() {
-    this.props.onGetUserInfo();
-  }
+export default function App() {
+  const error = useSelector(getError);
+  const dispatch = useDispatch();
 
-  render() {
-    const { error } = this.props;
+  // componentDidMount() {
+  //   this.props.onGetUserInfo();
+  // }
 
-    return (
-      <>
-        <div className="App">
-          <AppBar />
-          {/* {this.props.isLoading && <Spinner />} */}
-          <Suspense fallback={<Spinner />}>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <PublicRoute
-                path="/register"
-                restricted
-                component={RegisterView}
-              />
-              <PublicRoute path="/login" restricted component={LoginView} />
-              <PrivateRoute path="/contacts" component={ContactsView} />
-            </Switch>
-          </Suspense>
-          <ToastContainer />
-        </div>
-        {error &&
-          toast.error(`${error}`, { position: toast.POSITION.TOP_CENTER })}
-      </>
-    );
-  }
+  useEffect(() => {
+    dispatch(authOperations.getUserInfo());
+  }, [dispatch]);
+
+  // const { error } = this.props;
+  return (
+    <>
+      <div className="App">
+        <AppBar />
+        <Suspense fallback={<Spinner />}>
+          <Switch>
+            <PublicRoute exact path="/">
+              <Home />
+            </PublicRoute>
+
+            <PublicRoute path="/register" restricted>
+              <RegisterView />
+            </PublicRoute>
+
+            <PublicRoute path="/login" restricted>
+              <LoginView />
+            </PublicRoute>
+
+            <PrivateRoute path="/contacts">
+              <ContactsView />
+            </PrivateRoute>
+          </Switch>
+        </Suspense>
+        <ToastContainer />
+      </div>
+      {error &&
+        toast.error(`${error}`, { position: toast.POSITION.TOP_CENTER })}
+    </>
+  );
 }
 
-App.defaultProps = {
-  error: null,
-  isLoading: false,
-};
+// const mapDispatchToProps = {
+//   onGetUserInfo: authOperations.getUserInfo,
+// };
+// const mapStateToProps = state => ({
+//   error: getError(state),
+// });
 
-App.propTypes = {
-  error: PropTypes.string,
-  isLoading: PropTypes.bool,
-};
-
-const mapStateToProps = state => ({
-  isLoading: getLoading(state),
-  error: getError(state),
-});
-
-const mapDispatchToProps = {
-  onGetUserInfo: authOperations.getUserInfo,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default connect(mapStateToProps, mapDispatchToProps)(App);

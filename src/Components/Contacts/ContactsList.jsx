@@ -1,16 +1,23 @@
-import styles from './ContactsList.module.css';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import contactsOperations from '../../redux/contacts/contacts-operations';
 import { getVisibleContacts } from '../../redux/contacts/contacts-selectors';
-import { useEffect } from 'react';
+import styles from './ContactsList.module.css';
 
-function ContactList({ fetchContacts, contacts, onDeleteContact }) {
-  useEffect(() => fetchContacts(), []);
+export default function ContactList() {
+  const contacts = useSelector(getVisibleContacts);
+  const dispatch = useDispatch();
+  const onDeleteContact = id => dispatch(contactsOperations.deleteContact(id));
+
+  useEffect(() => {
+    dispatch(contactsOperations.fetchContacts());
+  }, [dispatch]);
+
   // componentDidMount() {
   //   fetchContacts();
   // }
   // const { contacts, onDeleteContact } = this.props;
+
   return contacts.length > 0 ? (
     <ul className={styles.contactsList}>
       {contacts.map(({ id, name, number }) => (
@@ -33,23 +40,13 @@ function ContactList({ fetchContacts, contacts, onDeleteContact }) {
   );
 }
 
-ContactList.defaultProps = {
-  contacts: [],
-};
+// const mapStateToProps = state => ({
+//   contacts: getVisibleContacts(state),
+// });
 
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(PropTypes.shape),
-  onDeleteContact: PropTypes.func.isRequired,
-  fetchContacts: PropTypes.func.isRequired,
-};
+// const mapDispatchToProps = dispatch => ({
+//   onDeleteContact: id => dispatch(contactsOperations.deleteContact(id)),
+//   fetchContacts: () => dispatch(contactsOperations.fetchContacts()),
+// });
 
-const mapStateToProps = state => ({
-  contacts: getVisibleContacts(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onDeleteContact: id => dispatch(contactsOperations.deleteContact(id)),
-  fetchContacts: () => dispatch(contactsOperations.fetchContacts()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+// export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

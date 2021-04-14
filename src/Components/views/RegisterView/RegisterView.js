@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Section from '../../Section';
 import authOperations from '../../../redux/auth/auth-operations';
 import styles from './RegisterView.module.css';
 
-function RegisterView({ onSubmit }) {
+export default function RegisterView() {
+  const dispatch = useDispatch();
+
   const [name, setName] = useState('');
   const handleNameChange = e => {
     setName(e.target.value);
@@ -29,6 +31,7 @@ function RegisterView({ onSubmit }) {
   // handleChange = ({ target: { name, value } }) => {
   //   this.setState({ [name]: value });
   // };
+
   const reset = () => {
     setName('');
     setEmail('');
@@ -37,7 +40,8 @@ function RegisterView({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({ name, email, password });
+    dispatch(authOperations.register({ name, email, password }));
+    // onSubmit({ name, email, password });
     reset();
   };
 
@@ -90,8 +94,8 @@ function RegisterView({ onSubmit }) {
 //   onSubmit: (data)=>dispatch(authOperations.register(data))
 // })
 
-const mapDispatchToProps = {
-  onSubmit: authOperations.register,
-};
+// const mapDispatchToProps = {
+//   onSubmit: authOperations.register,
+// };
 
-export default connect(null, mapDispatchToProps)(RegisterView);
+// export default connect(null, mapDispatchToProps)(RegisterView);

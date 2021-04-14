@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Section from '../../Section';
 import authOperations from '../../../redux/auth/auth-operations';
 import styles from './LoginView.module.css';
 
-function LoginView({ onSubmit }) {
+export default function LoginView() {
+  // state = {
+  //   email: '',
+  //   password: '',
+  // };
+
   const [email, setEmail] = useState('');
   const handleEmailChange = e => {
     setEmail(e.target.value);
@@ -15,14 +20,12 @@ function LoginView({ onSubmit }) {
     setPassword(e.target.value);
   };
 
-  // state = {
-  //   email: '',
-  //   password: '',
-  // };
-
   // handleChange = ({ target: { name, value } }) => {
   //   this.setState({ [name]: value });
   // };
+
+  const dispatch = useDispatch();
+
   const reset = () => {
     setEmail('');
     setPassword('');
@@ -30,7 +33,8 @@ function LoginView({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({ email, password });
+    dispatch(authOperations.login({ email, password }));
+    // onSubmit({ email, password });
     reset();
   };
 
@@ -69,8 +73,8 @@ function LoginView({ onSubmit }) {
   );
 }
 
-const mapDispatchToProps = {
-  onSubmit: authOperations.login,
-};
+// const mapDispatchToProps = {
+//   onSubmit: authOperations.login,
+// };
 
-export default connect(null, mapDispatchToProps)(LoginView);
+// export default connect(null, mapDispatchToProps)(LoginView);

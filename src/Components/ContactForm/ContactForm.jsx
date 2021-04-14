@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import contactsOperations from '../../redux/contacts/contacts-operations';
 import { getAllContacts } from '../../redux/contacts/contacts-selectors';
 import { ToastContainer, toast } from 'react-toastify';
-import PropTypes from 'prop-types';
 import styles from './ContactForm.module.css';
 
-function ContactForm({ items, formSubmitHandler }) {
+export default function ContactForm() {
+  // state = {
+  //   name: '',
+  //   number: '',
+  // };
   const [name, setName] = useState('');
   const handleInputNameChange = e => {
     setName(e.target.value);
@@ -18,17 +21,13 @@ function ContactForm({ items, formSubmitHandler }) {
     setNumber(e.target.value);
   };
 
-  // state = {
-  //   name: '',
-  //   number: '',
-  // };
-
-  const nameInputId = uuidv4();
-  const numberInputId = uuidv4();
   const reset = () => {
     setName('');
     setNumber('');
   };
+
+  const dispatch = useDispatch();
+  const items = useSelector(getAllContacts);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -39,9 +38,13 @@ function ContactForm({ items, formSubmitHandler }) {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-    formSubmitHandler({ name, number });
+
+    dispatch(contactsOperations.addContact({ name, number }));
+    // formSubmitHandler({ name, number });
     reset();
   };
+  const nameInputId = uuidv4();
+  const numberInputId = uuidv4();
 
   return (
     <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
@@ -84,21 +87,12 @@ function ContactForm({ items, formSubmitHandler }) {
   );
 }
 
-ContactForm.defaultProps = {
-  items: [],
-};
+// const mapStateToProps = state => ({
+//   items: getAllContacts(state),
+// });
 
-ContactForm.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape),
-  formSubmitHandler: PropTypes.func.isRequired,
-};
+// const mapDispatchToProps = dispatch => ({
+//   formSubmitHandler: data => dispatch(contactsOperations.addContact(data)),
+// });
 
-const mapStateToProps = state => ({
-  items: getAllContacts(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  formSubmitHandler: data => dispatch(contactsOperations.addContact(data)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
+// export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
