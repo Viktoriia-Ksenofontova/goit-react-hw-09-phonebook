@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Switch } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 import AppBar from './Components/Navigation/AppBar';
 import Spinner from './Components/Loader/Loader';
 import authOperations from './redux/auth/auth-operations';
@@ -64,6 +64,7 @@ export default function App() {
             <PrivateRoute path="/contacts">
               <ContactsView />
             </PrivateRoute>
+            <Redirect to="/" />
           </Switch>
         </Suspense>
         <ToastContainer />

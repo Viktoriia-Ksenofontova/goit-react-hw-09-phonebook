@@ -60,6 +60,7 @@ export default function RegisterView() {
             value={name}
             onChange={handleNameChange}
             className={styles.inputRegisterView}
+            autoComplete="off"
           />
         </label>
         <label className={styles.labelRegisterView}>
@@ -70,6 +71,7 @@ export default function RegisterView() {
             value={email}
             onChange={handleEmailChange}
             className={styles.inputRegisterView}
+            autoComplete="off"
           />
         </label>
         <label className={styles.labelRegisterView}>
@@ -80,6 +82,7 @@ export default function RegisterView() {
             value={password}
             onChange={handlePasswordChange}
             className={styles.inputRegisterView}
+            autoComplete="off"
           />
         </label>
         <button type="submit" className={styles.btnRegisterView}>

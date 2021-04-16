@@ -53,6 +53,7 @@ export default function LoginView() {
             value={email}
             onChange={handleEmailChange}
             className={styles.inputLoginView}
+            autoComplete="off"
           />
         </label>
         <label className={styles.labelLoginView}>
@@ -63,6 +64,7 @@ export default function LoginView() {
             value={password}
             onChange={handlePasswordChange}
             className={styles.inputLoginView}
+            autoComplete="off"
           />
         </label>
         <button type="submit" className={styles.btnLoginView}>
